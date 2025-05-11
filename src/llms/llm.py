@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Bytedance Ltd. and/or its affiliates
+# SPDX-License-Identifier: MIT
+
 from pathlib import Path  
 from typing import Any, Dict, Union  
   
@@ -6,7 +9,7 @@ from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from src.config import load_yaml_config  
 from src.config.agents import LLMType  
   
-# Cache for LLM instances - 使用联合类型  
+# Cache for LLM instances - use union to support both ChatOpenAI and AzureChatOpenAI  
 _llm_cache: dict[LLMType, Union[ChatOpenAI, AzureChatOpenAI]] = {}  
   
   
@@ -22,7 +25,7 @@ def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> Union[ChatO
     if not isinstance(llm_conf, dict):  
         raise ValueError(f"Invalid LLM Conf: {llm_type}")  
   
-    # 处理Azure OpenAI配置  
+    # handle Azure specific configurations
     if llm_conf.get("use_azure"):  
         azure_config = {  
             "azure_endpoint": llm_conf.get("api_base"),  
@@ -30,14 +33,14 @@ def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> Union[ChatO
             "api_version": llm_conf.get("api_version"),  
             "api_key": llm_conf.get("api_key"),  
         }  
-        # 从配置中移除Azure特定的键  
+        # remove azure specific keys from llm_conf  
         config_keys = ["use_azure", "api_base", "deployment_name", "api_version", "api_key"]  
         cleaned_conf = {k: v for k, v in llm_conf.items() if k not in config_keys}  
-        # 合并配置  
+        # combine cleaned_conf with azure_config
         final_conf = {**cleaned_conf, **azure_config}  
         return AzureChatOpenAI(**final_conf)  # 使用AzureChatOpenAI  
     else:  
-        # 使用标准OpenAI配置  
+        # use default ChatOpenAI  
         return ChatOpenAI(**llm_conf)  # 使用ChatOpenAI  
   
   
