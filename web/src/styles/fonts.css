@@ -1,0 +1,25 @@
+/* 字体样式 */
+@font-face {
+  font-family: 'Geist';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local('Geist'), url(/fonts/Geist-Variable.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: 'GeistMono';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: local('GeistMono'), url(/fonts/GeistMono-Variable.woff2) format('woff2');
+}
+
+/* 用于渲染代码的字体 */
+@font-face {
+  font-family: 'JetBrainsMono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('JetBrainsMono'), url(/fonts/JetBrainsMono-Regular.woff2) format('woff2');
+}
