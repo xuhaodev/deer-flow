@@ -100,22 +100,10 @@ Note: The available models and their exact names may change over time. Please ve
 DeerFlow supports the integration of Azure OpenAI models. Configuration example of `conf.yaml`:
 
 ```yaml
+# use Azure OpenAI Model endpoint
 BASIC_MODEL:
-  use_azure: true
-  model: "gpt-4"  # 基础模型名称，不需要添加azure/前缀
-  deployment_name: "your-deployment-name"  # Azure OpenAI的部署名称
-  api_base: "https://your-resource-name.openai.azure.com"  # Azure OpenAI endpoint
-  api_version: "2024-02-15-preview"  # Azure OpenAI API版本
-  api_key: "your-api-key"  # Azure OpenAI API密钥
-  temperature: 0.7  # 其他模型参数保持不变
-```
-
-必需的Azure配置参数：
-
-- `use_azure`: 设置为true以启用Azure OpenAI配置
-- `deployment_name`: Azure OpenAI的部署名称
-- `api_base`: Azure OpenAI的endpoint URL
-- `api_version`: Azure OpenAI API版本
-- `api_key`: Azure OpenAI API密钥
-
-其他模型参数（如temperature、max_tokens等）可以正常使用。
+  use_azure: true 
+  deployment_name: "gpt-4o" 
+  api_base: "https://your-endpoint.openai.azure.com/" 
+  api_version: "2025-03-01-preview" 
+  api_key: "your-api-key" 
