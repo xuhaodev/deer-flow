@@ -1,4 +1,4 @@
-/* 字体样式 */
+/* Font styles */
 @font-face {
   font-family: 'Geist';
   font-style: normal;
@@ -15,7 +15,7 @@
   src: local('GeistMono'), url(/fonts/GeistMono-Variable.woff2) format('woff2');
 }
 
-/* 用于渲染代码的字体 */
+/* Font used for rendering code */
 @font-face {
   font-family: 'JetBrainsMono';
   font-style: normal;

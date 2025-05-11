@@ -16,8 +16,7 @@ import "./src/env.js";
 // is still evolving and may not yet be fully stable for production environments.
 
 const config = {
-  // Next.js 15 不再支持 optimizeFonts 选项
-  
+
   // For development mode
   turbopack: {
     rules: {
@@ -25,7 +24,7 @@ const config = {
         loaders: ["raw-loader"],
         as: "*.js",
       },
-      // 通过规则解决字体加载问题
+      // Resolve font loading issues by adjusting the configuration rules.
       "@vercel/turbopack-next/internal/font/google/font": {
         loaders: ["empty-loader"],
       },
