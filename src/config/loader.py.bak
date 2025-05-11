@@ -36,9 +36,7 @@ def load_yaml_config(file_path: str) -> Dict[str, Any]:
     """Load and process YAML configuration file."""
     # 如果文件不存在，返回{}
     if not os.path.exists(file_path):
-        return {}
-
-    # 检查缓存中是否已存在配置
+        return {}    # 检查缓存中是否已存在配置
     if file_path in _config_cache:
         return _config_cache[file_path]
 

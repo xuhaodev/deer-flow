@@ -23,6 +23,7 @@ In DeerFlow, currently we only support non-reasoning models, which means models 
 > or set `max_step_num` to `2` when invoking the API.
 
 ### How to switch models?
+
 You can switch the model in use by modifying the `conf.yaml` file in the root directory of the project, using the configuration in the [litellm format](https://docs.litellm.ai/docs/providers/openai_compatible).
 
 ---
@@ -60,7 +61,7 @@ BASIC_MODEL:
 
 ### How to use Ollama models?
 
-DeerFlow supports the integration of Ollama models. You can refer to [litellm Ollama](https://docs.litellm.ai/docs/providers/ollama). <br>
+DeerFlow supports the integration of Ollama models. You can refer to [litellm Ollama](https://docs.litellm.ai/docs/providers/ollama). `<br>`
 The following is a configuration example of `conf.yaml` for using Ollama models:
 
 ```yaml
@@ -72,30 +73,49 @@ BASIC_MODEL:
 ### How to use OpenRouter models?
 
 DeerFlow supports the integration of OpenRouter models. You can refer to [litellm OpenRouter](https://docs.litellm.ai/docs/providers/openrouter). To use OpenRouter models, you need to:
+
 1. Obtain the OPENROUTER_API_KEY from OpenRouter (https://openrouter.ai/) and set it in the environment variable.
 2. Add the `openrouter/` prefix before the model name.
 3. Configure the correct OpenRouter base URL.
 
 The following is a configuration example for using OpenRouter models:
+
 1. Configure OPENROUTER_API_KEY in the environment variable (such as the `.env` file)
+
 ```ini
 OPENROUTER_API_KEY=""
 ```
+
 2. Set the model name in `conf.yaml`
+
 ```yaml
 BASIC_MODEL:
   model: "openrouter/google/palm-2-chat-bison"
 ```
 
-Note: The available models and their exact names may change over time. Please verify the currently available models and their correct identifiers in [OpenRouter's official documentation](https://openrouter.ai/docs).
+Note: The available models and their exact names may change over time. Please verify the currently available models and their correct identifiers in [OpenRouter&#39;s official documentation](https://openrouter.ai/docs).
 
 ### How to use Azure models?
 
-DeerFlow supports the integration of Azure models. You can refer to [litellm Azure](https://docs.litellm.ai/docs/providers/azure). Configuration example of `conf.yaml`:
+DeerFlow supports the integration of Azure OpenAI models. Configuration example of `conf.yaml`:
+
 ```yaml
 BASIC_MODEL:
-  model: "azure/gpt-4o-2024-08-06"
-  api_base: $AZURE_API_BASE
-  api_version: $AZURE_API_VERSION
-  api_key: $AZURE_API_KEY
+  use_azure: true
+  model: "gpt-4"  # 基础模型名称，不需要添加azure/前缀
+  deployment_name: "your-deployment-name"  # Azure OpenAI的部署名称
+  api_base: "https://your-resource-name.openai.azure.com"  # Azure OpenAI endpoint
+  api_version: "2024-02-15-preview"  # Azure OpenAI API版本
+  api_key: "your-api-key"  # Azure OpenAI API密钥
+  temperature: 0.7  # 其他模型参数保持不变
 ```
+
+必需的Azure配置参数：
+
+- `use_azure`: 设置为true以启用Azure OpenAI配置
+- `deployment_name`: Azure OpenAI的部署名称
+- `api_base`: Azure OpenAI的endpoint URL
+- `api_version`: Azure OpenAI API版本
+- `api_key`: Azure OpenAI API密钥
+
+其他模型参数（如temperature、max_tokens等）可以正常使用。
