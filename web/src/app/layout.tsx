@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import "~/styles/globals.css";
+import "~/styles/fonts.css"; // 导入字体样式
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
@@ -19,9 +20,13 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+// 尝试使用本地备用字体系统以防止 Google 字体加载失败
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist-sans",
+  display: "swap",
+  fallback: ["system-ui", "sans-serif"],
+  preload: false, // 禁用预加载以避免 Turbopack 的 bug
 });
 
 export default function RootLayout({
