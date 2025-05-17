@@ -25,12 +25,12 @@ def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> BaseChatMod
         "vision": conf.get("VISION_MODEL"),
     }
     llm_conf = llm_type_map.get(llm_type)
-    
+
     if not llm_conf:
         raise ValueError(f"Unknown LLM type: {llm_type}")
     if not isinstance(llm_conf, dict):
         raise ValueError(f"Invalid LLM Conf: {llm_type}")
-    
+
     # Check if Azure configuration exists as a sub-config
     if "AZURE" in llm_conf and isinstance(llm_conf["AZURE"], dict):
         azure_conf = llm_conf["AZURE"]
@@ -40,11 +40,11 @@ def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> BaseChatMod
             azure_endpoint=azure_conf.get("base_url"),
             openai_api_key=azure_conf.get("api_key"),
         )
-    
+
     # Check if OpenAI configuration exists as a sub-config
     if "OPENAI" in llm_conf and isinstance(llm_conf["OPENAI"], dict):
         return ChatOpenAI(**llm_conf["OPENAI"])
-    
+
     # Original behavior - direct configuration
     return ChatOpenAI(**llm_conf)
 
