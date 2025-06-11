@@ -18,6 +18,7 @@ export async function* chatStream(
     auto_accepted_plan: boolean;
     max_plan_iterations: number;
     max_step_num: number;
+    max_search_results?: number;
     interrupt_feedback?: string;
     enable_background_investigation: boolean;
     mcp_settings?: {
@@ -61,12 +62,14 @@ async function* chatReplayStream(
     auto_accepted_plan: boolean;
     max_plan_iterations: number;
     max_step_num: number;
+    max_search_results?: number;
     interrupt_feedback?: string;
   } = {
     thread_id: "__mock__",
     auto_accepted_plan: false,
     max_plan_iterations: 3,
     max_step_num: 1,
+    max_search_results: 3,
     interrupt_feedback: undefined,
   },
   options: { abortSignal?: AbortSignal } = {},
@@ -77,10 +80,13 @@ async function* chatReplayStream(
     if (urlParams.get("mock")) {
       replayFilePath = `/mock/${urlParams.get("mock")!}.txt`;
     } else {
-      replayFilePath =
-        params.interrupt_feedback === "accepted"
-          ? "/mock/before-interrupt.txt"
-          : "/mock/after-interrupt.txt";
+      if (params.interrupt_feedback === "accepted") {
+        replayFilePath = "/mock/final-answer.txt";
+      } else if (params.interrupt_feedback === "edit_plan") {
+        replayFilePath = "/mock/re-plan.txt";
+      } else {
+        replayFilePath = "/mock/first-plan.txt";
+      }
     }
     fastForwardReplaying = true;
   } else {
@@ -154,6 +160,7 @@ export async function fetchReplayTitle() {
       auto_accepted_plan: false,
       max_plan_iterations: 3,
       max_step_num: 1,
+      max_search_results: 3,
     },
     {},
   );

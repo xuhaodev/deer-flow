@@ -37,6 +37,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black>=24.2.0",
+    "langgraph-cli[inmem]>=0.2.10",
 ]
 test = [
     "pytest>=7.4.0",
@@ -51,6 +52,9 @@ filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::UserWarning",
 ]
+
+[tool.coverage.report]
+fail_under = 25
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]

@@ -4,6 +4,7 @@
 # - Replace `base_url` and `model` name if you want to use a custom model
 
 BASIC_MODEL:
+<<<<<<< HEAD
   base_url: https://ark.cn-beijing.volces.com/api/v3
   model: "doubao-1-5-pro-32k-250115"
   api_key: xxxx
@@ -15,3 +16,16 @@ BASIC_MODEL:
 #   api_base: "https://your-endpoint.openai.azure.com/" 
 #   api_version: "2025-03-01-preview" 
 #   api_key: "your-api-key" 
+=======
+  AZURE:
+    base_url: "https://your-endpoint.openai.azure.com/"
+    model: "gpt-4o"
+    api_key: xxxx
+    api_version: "2024-10-21"
+  # If you need OpenAI configuration, uncomment the following
+  # OPENAI:
+  #   base_url: https://ark.cn-beijing.volces.com/api/v3
+  #   model: "doubao-1-5-pro-32k-250115"
+  #   api_key: xxxx
+
+>>>>>>> 29329a9fa9a8ad28ccfcb69848f6cc8390e3ba11
