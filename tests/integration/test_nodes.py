@@ -20,6 +20,7 @@ MOCK_SEARCH_RESULTS = [
 def mock_state():
     return {
         "messages": [HumanMessage(content="test query")],
+        "research_topic": "test query",
         "background_investigation_results": None,
     }
 
@@ -68,7 +69,7 @@ def mock_web_search_tool():
         yield mock
 
 
-@pytest.mark.parametrize("search_engine", [SearchEngine.TAVILY, "other"])
+@pytest.mark.parametrize("search_engine", [SearchEngine.TAVILY.value, "other"])
 def test_background_investigation_node_tavily(
     mock_state,
     mock_tavily_search,
@@ -82,49 +83,43 @@ def test_background_investigation_node_tavily(
         result = background_investigation_node(mock_state, mock_config)
 
         # Verify the result structure
-        assert isinstance(result, Command)
-        assert result.goto == "planner"
+        assert isinstance(result, dict)
 
         # Verify the update contains background_investigation_results
-        update = result.update
-        assert "background_investigation_results" in update
+        assert "background_investigation_results" in result
 
         # Parse and verify the JSON content
-        results = json.loads(update["background_investigation_results"])
-        assert isinstance(results, list)
+        results = result["background_investigation_results"]
 
-        if search_engine == SearchEngine.TAVILY:
-            mock_tavily_search.return_value.invoke.assert_called_once_with(
-                {"query": "test query"}
+        if search_engine == SearchEngine.TAVILY.value:
+            mock_tavily_search.return_value.invoke.assert_called_once_with("test query")
+            assert (
+                results
+                == "## Test Title 1\n\nTest Content 1\n\n## Test Title 2\n\nTest Content 2"
             )
-            assert len(results) == 2
-            assert results[0]["title"] == "Test Title 1"
-            assert results[0]["content"] == "Test Content 1"
         else:
             mock_web_search_tool.return_value.invoke.assert_called_once_with(
                 "test query"
             )
-            assert len(results) == 2
+            assert len(json.loads(results)) == 2
 
 
 def test_background_investigation_node_malformed_response(
     mock_state, mock_tavily_search, patch_config_from_runnable_config, mock_config
 ):
     """Test background_investigation_node with malformed Tavily response"""
-    with patch("src.graph.nodes.SELECTED_SEARCH_ENGINE", SearchEngine.TAVILY):
+    with patch("src.graph.nodes.SELECTED_SEARCH_ENGINE", SearchEngine.TAVILY.value):
         # Mock a malformed response
         mock_tavily_search.return_value.invoke.return_value = "invalid response"
 
         result = background_investigation_node(mock_state, mock_config)
 
         # Verify the result structure
-        assert isinstance(result, Command)
-        assert result.goto == "planner"
+        assert isinstance(result, dict)
 
         # Verify the update contains background_investigation_results
-        update = result.update
-        assert "background_investigation_results" in update
+        assert "background_investigation_results" in result
 
         # Parse and verify the JSON content
-        results = json.loads(update["background_investigation_results"])
-        assert results is None
+        results = result["background_investigation_results"]
+        assert json.loads(results) is None

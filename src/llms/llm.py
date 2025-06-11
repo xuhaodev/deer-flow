@@ -75,6 +75,7 @@ if __name__ == "__main__":
 =======
 from pathlib import Path
 from typing import Any, Dict
+import os
 
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI, AzureChatOpenAI
@@ -86,38 +87,36 @@ from src.config.agents import LLMType
 _llm_cache: Dict[LLMType, BaseChatModel] = {}
 
 
+def _get_env_llm_conf(llm_type: str) -> Dict[str, Any]:
+    """
+    Get LLM configuration from environment variables.
+    Environment variables should follow the format: {LLM_TYPE}__{KEY}
+    e.g., BASIC_MODEL__api_key, BASIC_MODEL__base_url
+    """
+    prefix = f"{llm_type.upper()}_MODEL__"
+    conf = {}
+    for key, value in os.environ.items():
+        if key.startswith(prefix):
+            conf_key = key[len(prefix) :].lower()
+            conf[conf_key] = value
+    return conf
+
+
 def _create_llm_use_conf(llm_type: LLMType, conf: Dict[str, Any]) -> BaseChatModel:
     """
     Create LLM instance using configuration for given type.
     Supports both OpenAI and Azure OpenAI models.
     """
     llm_type_map = {
-        "reasoning": conf.get("REASONING_MODEL"),
-        "basic": conf.get("BASIC_MODEL"),
-        "vision": conf.get("VISION_MODEL"),
+        "reasoning": conf.get("REASONING_MODEL", {}),
+        "basic": conf.get("BASIC_MODEL", {}),
+        "vision": conf.get("VISION_MODEL", {}),
     }
     llm_conf = llm_type_map.get(llm_type)
-
     if not llm_conf:
         raise ValueError(f"Unknown LLM type: {llm_type}")
     if not isinstance(llm_conf, dict):
         raise ValueError(f"Invalid LLM Conf: {llm_type}")
-
-    # Check if Azure configuration exists as a sub-config
-    if "AZURE" in llm_conf and isinstance(llm_conf["AZURE"], dict):
-        azure_conf = llm_conf["AZURE"]
-        return AzureChatOpenAI(
-            deployment_name=azure_conf.get("model"),
-            openai_api_version=azure_conf.get("api_version"),
-            azure_endpoint=azure_conf.get("base_url"),
-            openai_api_key=azure_conf.get("api_key"),
-        )
-
-    # Check if OpenAI configuration exists as a sub-config
-    if "OPENAI" in llm_conf and isinstance(llm_conf["OPENAI"], dict):
-        return ChatOpenAI(**llm_conf["OPENAI"])
-
-    # Original behavior - direct configuration
     return ChatOpenAI(**llm_conf)
 
 
@@ -147,4 +146,3 @@ if __name__ == "__main__":
     # Initialize LLMs for different purposes - now these will be cached
     basic_llm = get_llm_by_type("basic")
     print(basic_llm.invoke("Hello"))
->>>>>>> 29329a9fa9a8ad28ccfcb69848f6cc8390e3ba11
